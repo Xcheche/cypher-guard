@@ -15,7 +15,7 @@ SECRET_KEY = config("SECRET_KEY")
 
 DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv(), default="localhost,127.0.0.1")
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv(), default="localhost,127.0.0.1,local.test")
 
 
 # Application definition
@@ -48,9 +48,12 @@ THIRD_PARTY_APPS = [
     "ckeditor",
     "django_extensions",
     "social_django",
+    "django_recaptcha",
     # "django_password_eye",  for password visibility toggle
 ]
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
+
+AUTH_USER_MODEL = "accounts.User"
 
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -186,11 +189,6 @@ MESSAGE_TAGS = {
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-# Ensure the custom user model exists in accounts/models.py as class User(AbstractUser)
-AUTH_USER_MODEL = "accounts.User"
-
-
-
 
 
 #Logging configuration
@@ -275,8 +273,8 @@ APPEND_SLASH = True
 CSRF_TRUSTED_ORIGINS = ["https://www.fortitech9ja.com", "https://www.fortitech9ja.com"]
 
 #Github OAuth2
-SOCIAL_AUTH_GITHUB_KEY=config('GITHUB_OAUTH2_KEY')
-SOCIAL_AUTH_GITHUB_SECRET=config('GITHUB_OAUTH2_SECRET')
+# SOCIAL_AUTH_GITHUB_KEY=config('GITHUB_OAUTH2_KEY')
+# SOCIAL_AUTH_GITHUB_SECRET=config('GITHUB_OAUTH2_SECRET')
 
 
 
@@ -287,7 +285,16 @@ LOGOUT_URL = "logout"
 
 
 # Safety: fail loud if still missing (remove once set)
-if not SOCIAL_AUTH_GITHUB_KEY or not SOCIAL_AUTH_GITHUB_SECRET:
-    raise RuntimeError(
-        "GitHub OAuth env vars missing. Set SOCIAL_AUTH_GITHUB_KEY/SECRET or GITHUB_OAUTH2_KEY/SECRET"
-    )
+# if not SOCIAL_AUTH_GITHUB_KEY or not SOCIAL_AUTH_GITHUB_SECRET:
+#     raise RuntimeError(
+#         "GitHub OAuth env vars missing. Set SOCIAL_AUTH_GITHUB_KEY/SECRET or GITHUB_OAUTH2_KEY/SECRET"
+#     )
+
+
+
+
+# Django reCAPTCHA — https://www.google.com/recaptcha/admin/create
+# Set RECAPTCHA_PUBLIC_KEY and RECAPTCHA_PRIVATE_KEY in .env
+# Register domains in Google admin (e.g. local.test, localhost, 127.0.0.1, your production domain)
+RECAPTCHA_PUBLIC_KEY = config("RECAPTCHA_PUBLIC_KEY", default="")
+RECAPTCHA_PRIVATE_KEY = config("RECAPTCHA_PRIVATE_KEY", default="")

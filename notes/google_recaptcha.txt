@@ -1,0 +1,152 @@
+# Google reCAPTCHA — Fortitech Project Notes
+
+## Overview
+reCAPTCHA protects the email/password login form only.
+"Login with Google" (OAuth) is a separate flow and does NOT use reCAPTCHA.
+
+Flow:
+1. User submits login form + completes reCAPTCHA widget
+2. LoginForm.is_valid() verifies token with Google (server-side)
+3. If valid → authenticate() runs
+4. Google OAuth button → goes to Google directly, never hits LoginForm
+
+
+# =============================================================================
+# 1. Package
+# =============================================================================
+# Added to requirements/base.txt:
+#   django-recaptcha==4.0.0
+
+pip install -r requirements/base.txt
+
+
+# =============================================================================
+# 2. Django settings
+# =============================================================================
+# config/settings/base.py
+#   - INSTALLED_APPS includes "django_recaptcha"
+#   - Reads keys from .env:
+#       RECAPTCHA_PUBLIC_KEY  (site key — used in template/widget)
+#       RECAPTCHA_PRIVATE_KEY (secret key — server verification only)
+
+# .env (project root — not committed to git)
+RECAPTCHA_PUBLIC_KEY=your-site-key-here
+RECAPTCHA_PRIVATE_KEY=your-secret-key-here
+
+
+ALLOWED_HOSTS=localhost,127.0.0.1,local.test,fortitech9ja.com,www.fortitech9ja.com,.onrender.com
+
+
+# =============================================================================
+# 3. Code changes
+# =============================================================================
+# accounts/forms.py
+#   - LoginForm with email, password, code, captcha (ReCaptchaField)
+#   - Server-side verification happens when form.is_valid() runs
+
+# accounts/views.py → user_login
+#   - POST: LoginForm(request.POST) → validate captcha → authenticate()
+#   - GET:  render login.html with empty LoginForm
+
+# templates/accounts/login.html
+#   - {{ form.captcha }} rendered before the Login button
+#   - Google OAuth button below — no captcha on that button
+
+# conftest.py
+#   - Tests bypass reCAPTCHA (monkeypatch) so pytest login tests still pass
+
+
+# =============================================================================
+# 4. Local domain setup (/etc/hosts)
+# =============================================================================
+# Used a custom local domain so reCAPTCHA domain rules match the browser URL.
+
+# Edit hosts file:
+sudo nano /etc/hosts
+
+# Add this line at the end:
+127.0.0.1   local.test
+
+# Save: Ctrl+O, Enter, then exit: Ctrl+X
+
+# Verify:
+ping local.test
+# Should resolve to 127.0.0.1
+
+
+# =============================================================================
+# 5. Google reCAPTCHA Admin
+# =============================================================================
+# Create/manage keys: https://www.google.com/recaptcha/admin
+
+# Add each domain as a SEPARATE entry (one per line — NOT comma-separated):
+
+local.test
+localhost
+127.0.0.1
+fortitech9ja.com
+www.fortitech9ja.com
+
+# Copy keys into .env:
+#   Site key   → RECAPTCHA_PUBLIC_KEY
+#   Secret key → RECAPTCHA_PRIVATE_KEY
+
+# reCAPTCHA type: v2 checkbox (default widget used by django-recaptcha)
+
+
+# =============================================================================
+# 6. Run & test locally (DEBUG=True)
+# =============================================================================
+python manage.py runserver local.test:8000
+
+# Open in browser (must match domain in reCAPTCHA admin):
+http://local.test:8000/login
+
+# Do NOT use http://127.0.0.1:8000 if only local.test is registered in admin
+# (hostname in browser must match a domain listed in reCAPTCHA admin)
+
+# Test:
+#   - Email/password login → reCAPTCHA widget should appear
+#   - Complete captcha → login should work
+#   - Google button → works without captcha
+
+
+# =============================================================================
+# 7. Token / verification timing (accounts app — separate from reCAPTCHA)
+# =============================================================================
+# PendingUser email verification code: 1 hour
+# Password reset token: 20 minutes
+# (See accounts/models.py — VERIFICATION_CODE_LIFESPAN, PASSWORD_RESET_TOKEN_LIFESPAN)
+
+
+# =============================================================================
+# 8. Production checklist (before push)
+# =============================================================================
+# 1. Add production domains in reCAPTCHA admin (fortitech9ja.com, www.fortitech9ja.com)
+# 2. Set RECAPTCHA_PUBLIC_KEY and RECAPTCHA_PRIVATE_KEY in production env vars
+# 3. Ensure ALLOWED_HOSTS includes production domain
+# 4. Site must be served over HTTPS in production
+# 5. Test login page after deploy
+
+# Optional: use separate reCAPTCHA key pairs for dev vs production
+#   - Dev site in admin: local.test, localhost, 127.0.0.1
+#   - Prod site in admin: fortitech9ja.com, www.fortitech9ja.com
+
+
+# =============================================================================
+# 9. Troubleshooting
+# =============================================================================
+# "Invalid site key" or captcha not loading:
+#   - Domain in browser URL not listed in reCAPTCHA admin
+#   - Wrong RECAPTCHA_PUBLIC_KEY in .env
+
+# Login always fails with captcha error:
+#   - Wrong RECAPTCHA_PRIVATE_KEY in .env
+#   - Keys swapped (public/secret reversed)
+
+# Django DisallowedHost:
+#   - Add hostname to ALLOWED_HOSTS in .env
+
+# reCAPTCHA works on localhost but not local.test:
+#   - Add local.test to /etc/hosts AND reCAPTCHA admin AND ALLOWED_HOSTS
+#   - Browse http://local.test:8000 not 127.0.0.1

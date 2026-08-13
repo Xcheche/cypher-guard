@@ -7,6 +7,9 @@ from decouple import config
 def main():
     debug = config("DEBUG", default=False, cast=bool)
     print("DEBUG value from .env or environment:", debug)
+    # Propagate DEBUG to the env so Django settings modules that read
+    # os.environ["DEBUG"] (or decouple) see the same value.
+    os.environ["DEBUG"] = str(debug)
     if debug:
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
     else:

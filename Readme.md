@@ -51,7 +51,7 @@ This platform combines content and commerce for a secure, manageable experience 
     ```
 3. **Install dependencies:**
     ```sh
-    pip install -r requirements.txt
+    pip install -r requirements/local.txt
     ```
 4. **Configure environment variables:**  
     Create a `.env` file in the project root:

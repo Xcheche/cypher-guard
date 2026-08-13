@@ -4,7 +4,7 @@
     // Queue messages from Django into a global, then render them after DOM ready.
     window.DJANGO_TOASTS = window.DJANGO_TOASTS || [];
     /* {% for message in messages %} */
-    window.DJANGO_TOASTS.push({ text: "{{ message|escapejs }}", level: "{{ message.tags|default_if_none:'info' }}" });
+    window.DJANGO_TOASTS.push({ text: "{{ message|escapejs }}", level: "{{ message.level_tag|default:'info' }}" });
     /* {% endfor %} */
     document.addEventListener("DOMContentLoaded", function () {
         if (typeof window.renderDjangoToasts === "function") {

@@ -10,6 +10,10 @@ from ckeditor.fields import RichTextField
 from cloudinary import CloudinaryImage 
 from cloudinary.models import CloudinaryField 
 
+# Token lifetimes (seconds)
+VERIFICATION_CODE_LIFESPAN = 60 * 60  # 1 hour for signup email codes
+PASSWORD_RESET_TOKEN_LIFESPAN = 20 * 60  # 20 minutes for password reset links
+
 # Create your models here.
 
 
@@ -38,14 +42,9 @@ class PendingUser(
     verification_code = models.CharField(max_length=255)
 
     def is_valid(self) -> bool:
-        lifespan_in_seconds = 20 * 60
         now = datetime.now(timezone.utc)
-
-        timediff = now - self.created_at
-        timediff = timediff.total_seconds()
-        if timediff > lifespan_in_seconds:
-            return False
-        return True
+        timediff = (now - self.created_at).total_seconds()
+        return timediff <= VERIFICATION_CODE_LIFESPAN
 
     def __str__(self):
         return self.email
@@ -68,13 +67,9 @@ class Token(CoreModel):
 
     # check if token is valid
     def is_valid(self) -> bool:
-        lifespan_in_seconds = 20 * 60  # 20 mins
         now = datetime.now(timezone.utc)
-        timediff = now - self.created_at
-        timediff = timediff.total_seconds()
-        if timediff > lifespan_in_seconds:
-            return False
-        return True
+        timediff = (now - self.created_at).total_seconds()
+        return timediff <= PASSWORD_RESET_TOKEN_LIFESPAN
 
     # resetting the user password
     def reset_user_password(self, raw_password: str):

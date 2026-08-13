@@ -1,10 +1,13 @@
 from .base import *  # noqa: F403
 from decouple import config, Csv
-import psycopg2  # noqa: F401
 
-ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv(), default="localhost,127.0.0.1")
+ALLOWED_HOSTS = config(
+    "ALLOWED_HOSTS",
+    cast=Csv(),
+    default="localhost,127.0.0.1,local.test",
+)
 
-#=====NOt in use now =====
+
 #Use SQLite for local development to simplify if you want
 DATABASES = {
     "default": {
@@ -42,7 +45,6 @@ INTERNAL_IPS = [
     "0.0.0.0",
     "0.0.0.1",
     "localhost",
+    "local.test",
     "testserver",
 ]
-
-ALLOWED_HOSTS = INTERNAL_IPS
