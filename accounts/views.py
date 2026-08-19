@@ -39,10 +39,11 @@ User = get_user_model()
 
 
 
-
-# ====== Register view with email verification
+#===========================================================#
+#  Register view with email verification
 # This view handles the registration of a new user. It checks if the email already exists in the database.
 # If the email is new, it creates a new PendingUser object with a verification code and sends a verification email.
+#===========================================================#
 @redirect_authenticated_user
 def register(request: HttpRequest):
     context = {}
@@ -84,8 +85,9 @@ def register(request: HttpRequest):
     else:
         return render(request, "accounts/register.html", context=context)
 
-
-# ======= Verify Account
+#===============================#
+# Verify Account
+#==============================#
 def verify_account(request: HttpRequest):
 
     if request.method == "POST":
@@ -116,11 +118,11 @@ def verify_account(request: HttpRequest):
                 request, "accounts/verify_account.html", {"email": email}, status=400
             )
 
-
-# ======= Login view
+#===============================#
+#  Login view
 # This view handles the login of existing users. It checks if the email and password are correct.
 # If the credentials are valid, it logs the user in and redirects them to the home page.
-
+#==============================#
 
 
 @redirect_authenticated_user
@@ -156,15 +158,19 @@ def user_login(request: HttpRequest):
     form = LoginForm()
     return render(request, "accounts/login.html", {"form": form})
 
-# ======= Logout view
+
+
+#===============================#
+#  Logout view
+#==============================#
 def logout(request: HttpRequest):
     auth.logout(request)
     messages.success(request, "You have been logged out")
     return redirect("home")
 
-
-# ====password_reset
-# def send_password_reset_link(request: HttpRequest):
+#=========================================#
+# password_reset
+#========================================#
 
 def send_password_reset_link(request: HttpRequest):
     if request.method == "POST":
@@ -201,7 +207,9 @@ def send_password_reset_link(request: HttpRequest):
     return render(request, "accounts/forgot_password.html")
 
 
-# =======verify_password
+#=========================================#
+# Verify Password Reset Link
+#========================================#
 def verify_password_reset_link(request: HttpRequest):
     email = request.GET.get("email")
     reset_token = request.GET.get("token")
@@ -219,9 +227,9 @@ def verify_password_reset_link(request: HttpRequest):
         "accounts/set_new_password_using_reset_token.html",
         context={"email": email, "token": reset_token},
     )
-
-
-# ===========set_new_password
+#=========================================#
+# Set New Password Using Reset Link
+#========================================#
 def set_new_password_using_reset_link(request: HttpRequest):
     """Set a new password given the token sent to the user email"""
 
@@ -256,8 +264,9 @@ def set_new_password_using_reset_link(request: HttpRequest):
 
 
 
-
-# ===== Dashboard view# This view handles the user's dashboard. It allows the user to update their profile and dashboard information.
+#=========================================#
+# Dashboard view
+#========================================#
 @login_required
 def dashboard(request):
     #Ensure the dashboard exists in an atomic transaction
@@ -294,8 +303,9 @@ def dashboard(request):
         },
     )
 
-
-# ====Delete Dashboard
+#=========================================#
+# Delete Dashboard view
+#========================================#
 # This view handles the deletion of the user's dashboard. It deletes the dashboard and redirects to the
 
 @login_required
@@ -310,8 +320,9 @@ def delete_dashboard(request):
         request, "accounts/delete_dashboard.html", {"page_title": "Delete Account"}
     )
 
-
-# =====Change Password
+#=========================================#
+# Password change in dashboard view
+#========================================#
 # This view handles the change of the user's password. It checks if the old password is correct
 
 class DashboardPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
@@ -328,8 +339,9 @@ class DashboardPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
 
 
 
-
-# ===== About view
+#=========================================#
+# About view
+#========================================#
 # This view renders the about page. It can be used to provide information about the application or
 def about(request: HttpRequest):
     items = About.objects.all()
@@ -350,7 +362,3 @@ def about(request: HttpRequest):
 
 
 
-
-#TODO:Notification per  user Dashboard django channels or celery tasks
-#TODO:News letter subscription
-#TODO:Blog subscription plans with stripe integration or paystack

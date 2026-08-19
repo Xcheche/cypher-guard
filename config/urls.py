@@ -19,6 +19,12 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
+import config.admin 
+
+
+def trigger_error(request):
+    division_by_zero = 1 / 0
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -26,6 +32,8 @@ urlpatterns = [
     path("", include("blog.urls")),
     path("shop/", include("shop.urls")),
     path("contacts/", include("contacts.urls")),
+    # Sentry Debugging
+    path('sentry-debug/', trigger_error),
     
     # Social Auth
     path("social-auth/", include("social_django.urls", namespace="social")),

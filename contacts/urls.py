@@ -11,5 +11,5 @@ from . import views
 
 urlpatterns = [
     path("contact/", views.contact, name="contact"),
-    path("register_course/", views.register_course, name="register_course"),
+  
 ]

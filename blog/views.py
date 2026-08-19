@@ -103,7 +103,7 @@ def post_detail(request, year, month, day, post):
                 Comment.objects.filter(id=parent_id).first() if parent_id else None
             )
             comment.save()
-            #TODO: Send email notification to post author about new comment
+            # TODO: Send email notification to post author and commenter about new comment
             messages.success(request, "Your comment has been added successfully.")
             return redirect(post.get_absolute_url())
     else:
@@ -185,7 +185,7 @@ class DeleteView(DeleteView):
 
 
 #============Share Post=========================
-# Share post
+
 def share_post(request, post_id):
     post = get_object_or_404(Post, id=post_id, status=Post.Status.PUBLISHED)
     sent = False
@@ -253,25 +253,6 @@ class UserPostListView(ListView):
 
 
 
-#======================== Search View========================================
-#Use this if not using Q objects and want to return a result template and lopp through results 
-#or return to index.html with results context and loop through results
-# def search(request):
-#     query = request.GET.get('q')
-#     results = []
-
-#     if query:
-#         results = (
-#             Post.published.filter(title__icontains=query) |
-#             Post.published.filter(body__icontains=query) |
-#             Post.published.filter(category__name__icontains=query)
-#         ).distinct()
-
-#     context = {
-#         'results': results,
-#         'query': query,
-#     }
-#     return render(request, 'blog/index.html', context)
 
 
 #======================== Search View========================================
@@ -300,8 +281,6 @@ def search(request):
 
 
 #================================ Like a post and toggle on/off=========================================
-@login_required
-
 
 @login_required
 def like_post(request, pk):

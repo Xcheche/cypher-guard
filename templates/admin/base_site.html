@@ -1,0 +1,122 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ site_title|default:_('Fortitech   site admin') }}{% endblock %}
+{% block branding %}
+<h1 id="site-name">
+  <a href="{% url 'admin:index' %}" class="admin-brand">
+    <img src="{% static 'admin/brand/forty.png' %}" alt="Fortitech" class="admin-brand__logo">
+    <span>{{ site_header }}</span>
+  </a>
+</h1>
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+
+<style>
+  :root {
+    --primary: #283448;
+    --secondary: #242424;
+
+    /* ✅ changed to mauve/purple */
+    --accent: #a78bfa;
+
+    --primary-fg: #ffffff;
+    --body-fg: #1f2937;
+    --body-bg: #DF8442;
+
+    --body-quiet-color: #4a4a4a;
+    --body-loud-color: #111111;
+
+    --darkened-bg: #f5f5f5;
+
+    /* slight purple blend in header */
+    --header-bg: linear-gradient(135deg, #111111 0%, #242424 60%, #DF8442 100%);
+    --header-link-color: #ffffff;
+
+    --breadcrumbs-fg: #ede9fe;
+    --breadcrumbs-link-fg: #ffffff;
+    --breadcrumbs-bg: rgba(17, 17, 17, 0.35);
+
+    --link-fg: #a78bfa;
+    --link-hover-color: #facc15;
+    --link-selected-fg: #facc15;
+
+    --hairline-color: #b8b8b8;
+    --border-color: #a8a8a8;
+  }
+
+  html, body {
+    background:
+      radial-gradient(circle at top left, rgba(167, 139, 250, 0.08), transparent 35%),
+      linear-gradient(180deg, #ffffff 0%, #fafafa 50%, #f5f5f5 100%);
+  }
+
+  body {
+    color: var(--body-fg);
+  }
+
+  #header {
+    background: var(--header-bg);
+    box-shadow: 0 10px 25px rgba(17, 17, 17, 0.18);
+  }
+
+  #branding h1,
+  #branding h1 a,
+  #user-tools,
+  #user-tools a,
+  .breadcrumbs,
+  .breadcrumbs a {
+    color: var(--header-link-color);
+  }
+
+  #branding h1 a:hover,
+  #user-tools a:hover,
+  .breadcrumbs a:hover {
+    color: var(--link-hover-color);
+  }
+
+  #content {
+    padding-top: 24px;
+  }
+
+  .module,
+  .inline-group,
+  .aligned,
+  .dashboard #content-main .module,
+  .submit-row,
+  .app-auth .module,
+  .app-core .module {
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+    backdrop-filter: blur(6px);
+  }
+
+  .module h2,
+  .module caption,
+  .module th,
+  .module td {
+    border-color: var(--hairline-color);
+  }
+
+  a {
+    color: var(--link-fg);
+  }
+
+  a:hover {
+    color: var(--link-hover-color);
+  }
+
+
+  .admin-brand__logo {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+  }
+
+</style>
+ 
+{% endblock %}

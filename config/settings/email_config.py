@@ -52,14 +52,14 @@ else:
 
 
 # Debugging output to verify email settings are loaded correctly
-print(
-    "Email configuration loaded: ",
-    {
-        "profile": "mailpit" if debug else "zoho",
-        "EMAIL_BACKEND": EMAIL_BACKEND,
-        "EMAIL_HOST": EMAIL_HOST,
-        "EMAIL_PORT": EMAIL_PORT,
-        "EMAIL_USE_TLS": EMAIL_USE_TLS,
-        "EMAIL_USE_SSL": EMAIL_USE_SSL,
-    },
-)
+# print(
+#     "Email configuration loaded: ",
+#     {
+#         "profile": "mailpit" if debug else "zoho",
+#         "EMAIL_BACKEND": EMAIL_BACKEND,
+#         "EMAIL_HOST": EMAIL_HOST,
+#         "EMAIL_PORT": EMAIL_PORT,
+#         "EMAIL_USE_TLS": EMAIL_USE_TLS,
+#         "EMAIL_USE_SSL": EMAIL_USE_SSL,
+#     },
+# )

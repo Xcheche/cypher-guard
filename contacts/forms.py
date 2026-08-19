@@ -3,23 +3,28 @@ from django.utils import timezone
 from django import forms
 
 from contacts.models import Contact
+from django_recaptcha.fields import ReCaptchaField
 
 
 class ContactForm(forms.ModelForm):
 
     # form fields
+    captcha = ReCaptchaField(label="")
+
+    class Meta:
+        model = Contact
+        fields = ["name", "phone", "email", "message", "purpose", "captcha"]
     class Meta:
         """
         Meta class for the Contact form.
 
         Attributes:
             model (Contact): Specifies the model associated with the form.
-            fields (list): List of fields to include in the form: "name", "phone", "email", "message", and "purpose".
+            fields (list): List of fields to include in the form: "name", "phone", "email", "message", "purpose", and "captcha".
         """
         model = Contact
-        fields = ["name", "phone", "email", "message", "purpose"]
-        
-
+        fields = ["name", "phone", "email", "message", "purpose", "captcha"]
+       
 
 
 

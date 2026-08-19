@@ -1,13 +1,19 @@
 # config/settings/base.py
 
 from decouple import config, Csv
-
+import sentry_sdk
 from pathlib import Path
 
 from .storages import *  # noqa: F403
 from .email_config import *  # noqa: F403
 from .celery import *  # noqa: F403
 
+
+
+
+# ========================================#
+#   Django settings for Fortitech project
+# =========================================#
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -17,6 +23,14 @@ DEBUG = config("DEBUG", default=False, cast=bool)
 
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv(), default="localhost,127.0.0.1,local.test")
 
+
+
+# ========================================#
+#    Admin Branding
+# =========================================#
+ADMIN_SITE_HEADER = "Fortitech"
+ADMIN_SITE_TITLE = "Fortitech"
+ADMIN_INDEX_TITLE = "Welcome to Fortitech"
 
 # Application definition
 
@@ -93,7 +107,11 @@ TEMPLATES = [
 ]
 
 
-# Add social_django context processors
+
+
+# ========================================#
+#    Social login context processors
+# =========================================#
 TEMPLATES[0]["OPTIONS"]["context_processors"] += [
     "social_django.context_processors.backends",
     "social_django.context_processors.login_redirect",
@@ -105,6 +123,11 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 # DATABASES normally not set here or set to empty dict if needed
+
+
+# ========================================#
+#    Database configuration
+# =========================================#
 DATABASES = {}
 
 # Password validation
@@ -191,7 +214,11 @@ MESSAGE_TAGS = {
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-#Logging configuration
+
+
+# ========================================#
+#    Logging configuration
+# =========================================#
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -218,7 +245,11 @@ LOGGING = {
 
 
 
-#------------------Social_django----------------
+
+
+# ========================================#
+#    Authentication Backends
+# =========================================#
 AUTHENTICATION_BACKENDS = [
 'django.contrib.auth.backends.ModelBackend',
 'accounts.authentication.EmailAuthBackend',
@@ -227,7 +258,11 @@ AUTHENTICATION_BACKENDS = [
 ] 
 
 
-#-------------------------------Social Auth Pipeline------------------ 
+
+
+# ========================================#
+#    Social Pipeline configuration
+# =========================================#
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',
     'social_core.pipeline.social_auth.social_uid',
@@ -298,3 +333,19 @@ LOGOUT_URL = "logout"
 # Register domains in Google admin (e.g. local.test, localhost, 127.0.0.1, your production domain)
 RECAPTCHA_PUBLIC_KEY = config("RECAPTCHA_PUBLIC_KEY", default="")
 RECAPTCHA_PRIVATE_KEY = config("RECAPTCHA_PRIVATE_KEY", default="")
+
+
+
+
+
+
+# ========================================#
+#   Sentry configuration
+# =========================================#
+
+sentry_sdk.init(
+    dsn="https://ee2098811c01bc5524668b110be8b413@o4510340180803584.ingest.de.sentry.io/4511928934662224",
+    # Add data like request headers and IP for users,
+    # see https://docs.sentry.io/platforms/python/data-management/data-collected/ for more info
+    send_default_pii=True,
+)

@@ -64,8 +64,14 @@
                                     <li>{{ error }}</li>
                                 {% endfor %}
                             </ul>
+                          
                         </div>
+                 
                     {% endif %}
+                             <!-- reCAPTCHA widget -->
+                              <div class="form-group">
+                                  {{ form.captcha }}
+                              </div>
                     <!--End non field errors-->
                     <button class="submit_btn btn" id="js-contact-btn" type="submit">SEND Request <i class="fa fa-arrow-right"></i></button>
 

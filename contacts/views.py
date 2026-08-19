@@ -7,6 +7,10 @@ from contacts.forms import ContactForm
 # Create your views here.
 
 
+
+#================================#  
+#  Contact Views
+#===============================#
 def contact(request):
     """
     Render the contact page.
@@ -31,6 +35,3 @@ def contact(request):
     }
     return render(request, "contacts/contact.html", context)
 
-
-def register_course(request):
-    return render(request, "contacts/register_course.html")

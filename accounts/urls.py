@@ -3,7 +3,10 @@ from . import views
 
 
 urlpatterns = [
-    # path('',views.landing,name='landing'),
+
+    #=============================#
+    # Other Urls
+    #=============================#
     path("dashboard/", views.dashboard, name="dashboard"),
     path("dashboard/delete/", views.delete_dashboard, name="delete_dashboard"),
     path(
@@ -12,7 +15,10 @@ urlpatterns = [
         name="change_password",
     ),
     path("about/", views.about, name="about"),
-    # Auth
+
+    #=================================#
+    # Auth URLs
+    #=================================#
     path("register/", views.register, name="register"),
     path("verify_account/", views.verify_account, name="verify_account"),
     path("login/", views.user_login, name="login"),
